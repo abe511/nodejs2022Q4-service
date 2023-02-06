@@ -6,10 +6,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @Redirect("/user", HttpStatus.TEMPORARY_REDIRECT)
+  @Redirect('/user', HttpStatus.TEMPORARY_REDIRECT)
   getHello(): string {
     return this.appService.getHello();
   }
-
-
 }
