@@ -1,12 +1,5 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
-import { validate } from "uuid";
 
-
-const validateUUID = (id: string): void => {
-    if(!validate(id.trim())) {
-        throw new HttpException("Bad Request", HttpStatus.BAD_REQUEST);
-    }
-};
 
 export const checkCredentials = (login: string, password: string): void => {
     if(!login || !password) {
@@ -22,7 +15,7 @@ export const comparePassword = (userPassword: string, password: string): void =>
 
 
 export const findRecord = (db: any[], id: string): number => {
-    validateUUID(id);
+    // validateUUID(id);
     const index = db.findIndex((entry) => {
         return entry.id === id;
     });

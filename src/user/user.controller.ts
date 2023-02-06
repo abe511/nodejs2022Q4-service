@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
+
 
 @Controller('user')
 export class UserController {
@@ -18,17 +19,17 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe({version: "4"})) id: string) {
     return this.userService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdatePasswordDto) {
+  update(@Param('id', new ParseUUIDPipe({version: "4"})) id: string, @Body() updateUserDto: UpdatePasswordDto) {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe({version: "4"})) id: string) {
     return this.userService.remove(id);
   }
 }
