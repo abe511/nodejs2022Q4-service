@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
+// import { Equals } from 'class-validator';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import Album from './entities/album.entity';
+import albumDB from "./db/albumDB";
+
 
 @Injectable()
 export class AlbumService {
-  create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+
+  db = new albumDB();
+
+  create(createAlbumDto: CreateAlbumDto): Album {
+    return this.db.createAlbum(createAlbumDto);
   }
 
-  findAll() {
-    return `This action returns all album`;
+  findAll(): Album[] {
+    return this.db.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  findOne(id: string): Album {
+    return this.db.findAlbum(id);
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+  update(id: string, updateAlbumDto: UpdateAlbumDto): Album | number{
+    return this.db.updateAlbum(id, updateAlbumDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  remove(id: string): boolean {
+    return this.db.removeAlbum(id);
   }
 }
