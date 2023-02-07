@@ -1,4 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateFavoriteDto } from './create-favorite.dto';
+import { CreateFavoritesDto } from './create-favorite.dto';
 
-export class UpdateFavoriteDto extends PartialType(CreateFavoriteDto) {}
+export class UpdateFavoritesDto extends PartialType(CreateFavoritesDto) {
+    artists: string[]; // favorite artists ids
+    albums: string[]; // favorite albums ids
+    tracks: string[]; // favorite tracks ids
+}

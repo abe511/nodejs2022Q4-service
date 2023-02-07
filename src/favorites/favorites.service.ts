@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
+import { v4 as uuid } from 'uuid';
+// import { Equals } from 'class-validator';
+import { CreateFavoritesDto } from './dto/create-favorite.dto';
+import { UpdateFavoritesDto } from './dto/update-favorite.dto';
+import Favorites from './entities/favorites.entity';
+import favoritesDB from "./db/favoritesDB";
+
 
 @Injectable()
 export class FavoritesService {
-  create(createFavoriteDto: CreateFavoriteDto) {
-    return 'This action adds a new favorite';
+
+  db = new favoritesDB();
+
+  create(createFavoritesDto: CreateFavoritesDto): Favorites {
+    return this.db.createFavorites(createFavoritesDto);
   }
 
-  findAll() {
-    return `This action returns all favorites`;
+  findAll(): Favorites[] {
+    return this.db.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} favorite`;
+  findOne(id: string): Favorites {
+    return this.db.findFavorites(id);
   }
 
-  update(id: number, updateFavoriteDto: UpdateFavoriteDto) {
-    return `This action updates a #${id} favorite`;
+  update(id: string, updateFavoritesDto: UpdateFavoritesDto): Favorites | number{
+    return this.db.updateFavorites(id, updateFavoritesDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} favorite`;
+  remove(id: string): boolean {
+    return this.db.removeFavorites(id);
   }
 }
