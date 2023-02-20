@@ -13,14 +13,39 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
 
-  adminer:
-    image: adminer
-    container_name: rest-service-adminer
+  app:
+    image: node:18-alpine
+    container_name: rest-service-nestjs
     restart: always
+    user: node
+    working_dir: /usr/src/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/usr/src/app
     ports:
-      - 8080:8080
-  # app:
-  #   image: imagename
-  #   container_name: rest-service-nestjs
-  #   restart: always
+      - 8080:4000
+    # expose:
+    #   - "8080"
+    command: "npm start"
+
+  pgadmin:
+    container_name: pgadmin4_container
+    container_name: rest-service-pgadmin4
+
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - 8000:80
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
     
+volumes:
+  pgdata:
+  pgadmin-data:
+
+# network:
+#   rest-service-network:
