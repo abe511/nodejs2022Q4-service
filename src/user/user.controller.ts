@@ -25,7 +25,7 @@ export class UserController {
     if (!createUserDto.login || !createUserDto.password) {
       throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
-    return this.userService.create(createUserDto);
+    return this.userService.save(createUserDto);
   }
 
   @Get()
@@ -51,12 +51,12 @@ export class UserController {
     //   throw new HttpException("Bad Request", HttpStatus.BAD_REQUEST);
     // }
     const response = this.userService.update(id, updateUserDto);
-    if(response === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    }
-    if(response === -1) {
-      throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
-    }
+    // if(response === 0) {
+    //   throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    // }
+    // if(response === -1) {
+    //   throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
+    // }
     return response;
   }
 
