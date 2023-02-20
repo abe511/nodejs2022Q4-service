@@ -6,12 +6,16 @@ services:
     image: postgres:15-alpine
     container_name: rest-service-postgres
     restart: always
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_DB: data
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - back-tier
 
   app:
     image: node:18-alpine
@@ -20,11 +24,13 @@ services:
     user: node
     working_dir: /usr/src/app
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     volumes:
       - ./:/usr/src/app
     ports:
       - 8080:4000
+    networks:
+      - back-tier
     # expose:
     #   - "8080"
     command: "npm start"
@@ -40,12 +46,15 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - 8000:80
-    volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
-    
+
+    # volumes:
+    #   - ./pgadmin-data:/var/lib/pgadmin
+    # networks:
+    #   - back-tier
+
 volumes:
   pgdata:
-  pgadmin-data:
+  # pgadmin-data:
 
-# network:
-#   rest-service-network:
+networks:
+  back-tier:
