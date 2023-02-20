@@ -1,0 +1,26 @@
+# Use postgres/example user/password credentials
+version: "3.8"
+services:
+
+  db:
+    image: postgres:15-alpine
+    container_name: rest-service-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: data
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: rest-service-adminer
+    restart: always
+    ports:
+      - 8080:8080
+  # app:
+  #   image: imagename
+  #   container_name: rest-service-nestjs
+  #   restart: always
+    

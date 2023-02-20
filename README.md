@@ -1,5 +1,15 @@
 # Home Library Service
 
+> run:
+
+## start this compose stack detached
+`
+docker compose -f docker-compose.yaml up -d
+`
+## run docker container detached
+`
+docker run --name postgres -e POSTGRES_PASSWORD=pass -e POSTGRES_USER=user -e POSTGRES_DB=data -d -p 5432:5432 postgres:15-alpine
+`
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
