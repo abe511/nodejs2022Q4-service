@@ -1,5 +1,10 @@
 # Home Library Service
 
+> build:
+
+docker build .  --tag rest-service:latest
+
+
 > run:
 
 ## start this compose stack detached

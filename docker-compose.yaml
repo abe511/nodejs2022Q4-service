@@ -5,6 +5,7 @@ services:
     image: postgres:15-alpine
     container_name: rest-service-postgres
     restart: always
+    # user: postgres
     ports:
       - ${DB_PORT}:5432
     environment:
@@ -15,22 +16,57 @@ services:
       - ${POSTGRES_DATA}:/var/lib/postgresql/data
     networks:
       - back-tier
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # command: "sudo -u postgres createuser -s root"
+    # command: "psql -U postgres"
+    # command: "psql -l"
+
+  # app:
+  #   image: node:18-alpine
+  #   container_name: rest-service-nestjs
+  #   restart: always
+  #   user: node
+  #   working_dir: /usr/src/app
+  #   environment:
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ${APP_DATA}:/usr/src/app
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   networks:
+  #     - back-tier
+  #   command: "npm start"
 
   app:
-    image: node:18-alpine
+    build:
+      context: .
+    # image: rest-service-app:${TAG}
     container_name: rest-service-nestjs
+    depends_on:
+      db:
+        condition: service_healthy
     restart: always
-    user: node
-    working_dir: /usr/src/app
+    # user: node
     environment:
-      - NODE_ENV=development
+      # NODE_ENV=development
+      PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      PGUSER: ${PGUSER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ${APP_DATA}:/usr/src/app
+      - ${APP_DATA}:/app
     ports:
       - ${PORT}:${PORT}
     networks:
       - back-tier
-    command: "npm start"
+    command: "npm run start:prod"
 
   # pgadmin:
   #   container_name: pgadmin4_container
@@ -45,14 +81,12 @@ services:
   #     - ${PGADMIN_PORT}:80
     # volumes:
     #   - ${PGADMIN_DATA}:/var/lib/pgadmin
-    #   - ${PGADMIN_SESSIONS}:/var/lib/pgadmin/sessions
     # networks:
     #   - back-tier
 
 volumes:
   pgdata:
-  pgadmin-data:
-  pgadmin-sessions:
+  # pgadmin-data:
 
 networks:
   back-tier:

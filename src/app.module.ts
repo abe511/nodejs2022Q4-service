@@ -12,6 +12,7 @@ import { User } from "./user/entities/user.entity";
 import { config } from 'dotenv';
 config();
 
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -38,4 +39,6 @@ config();
   controllers: [AppController],
   providers: [AppService],
 })
+
+
 export class AppModule {}
