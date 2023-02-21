@@ -22,7 +22,7 @@ config();
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      // synchronize: true, // NOT FOR PRODUCTION MODE
+      synchronize: true, // NOT FOR PRODUCTION MODE
       logging: false,
       entities: [User],
       migrations: [],

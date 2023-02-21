@@ -1,20 +1,34 @@
 # Home Library Service
 
-> build:
+> make
 
-docker build .  --tag rest-service:latest
+On Linux, MacOS run:
+
+`make`
+
+On Windows (not tested):
+
+`choco install make`
+
+`make`
+
+#### this will run docker compose and deploy `app` and `db` containers
 
 
-> run:
+#### other commands:
 
-## start this compose stack detached
-`
-docker compose -f docker-compose.yaml up -d
-`
-## run docker container detached
-`
-docker run --name postgres -e POSTGRES_PASSWORD=pass -e POSTGRES_USER=user -e POSTGRES_DB=data -d -p 5432:5432 postgres:15-alpine
-`
+`make clean`
+
+
+
+
+## Docker Image
+
+### Get the `latest` Docker image of this app
+
+`docker pull abe511/rest-service:latest`
+
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).

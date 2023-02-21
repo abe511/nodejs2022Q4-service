@@ -1,9 +1,9 @@
 .env
-./node_modules
+.git
+dist
+node_modules
 npm-debug.log
 
-./dist
-./.git
 
-./pgdata
-./pgadmin-data
+pgdata
+pgadmin-data

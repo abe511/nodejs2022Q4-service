@@ -28,9 +28,15 @@ export class User {
   // @Column({type: "timestamptz", nullable: true})
   // updatedAt: Date; // timestamp of last update
 
-  @CreateDateColumn({type: "timestamp", nullable: true})
-  createdAt; // timestamp of creation
+  // @CreateDateColumn({type: "timestamp", nullable: true})
+  // createdAt; // timestamp of creation
 
-  @UpdateDateColumn({type: "timestamp", nullable: true})
-  updatedAt; // timestamp of last update
+  // @UpdateDateColumn({type: "timestamp", nullable: true})
+  // updatedAt; // timestamp of last update
+
+  @CreateDateColumn()
+  createdAt: Date; // timestamp of creation
+
+  @UpdateDateColumn()
+  updatedAt: Date; // timestamp of last update
 }

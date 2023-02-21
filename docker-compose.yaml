@@ -5,7 +5,6 @@ services:
     image: postgres:15-alpine
     container_name: rest-service-postgres
     restart: always
-    # user: postgres
     ports:
       - ${DB_PORT}:5432
     environment:
@@ -21,9 +20,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # command: "sudo -u postgres createuser -s root"
-    # command: "psql -U postgres"
-    # command: "psql -l"
 
   # app:
   #   image: node:18-alpine
@@ -66,7 +62,8 @@ services:
       - ${PORT}:${PORT}
     networks:
       - back-tier
-    command: "npm run start:prod"
+    # command: "npm run start:prod"
+    command: "npm start"
 
   # pgadmin:
   #   container_name: pgadmin4_container
