@@ -9,15 +9,18 @@ import { TrackModule } from './track/track.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { User } from "./user/entities/user.entity";
 
+import { config } from 'dotenv';
+config();
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "db",
-      port: 5432,
-      username: "user",
-      password: "pass",
-      database: "data",
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
       // synchronize: true, // NOT FOR PRODUCTION MODE
       logging: false,
       entities: [User],
