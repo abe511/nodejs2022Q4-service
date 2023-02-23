@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 // import { Equals } from "class-validator";
 import { CreateUserDto } from './dto/create-user.dto';
