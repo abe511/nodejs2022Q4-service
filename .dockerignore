@@ -1,9 +1,14 @@
-.env
+Makefile
+docker-compose.yaml
+Dockerfile
+.dockerignore
 .git
+.gitignore
+.env
 dist
 node_modules
 npm-debug.log
 
-
-pgdata
-pgadmin-data
+README.md
+assignment.md
+score.md

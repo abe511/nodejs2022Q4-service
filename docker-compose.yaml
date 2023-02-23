@@ -3,7 +3,7 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: rest-service-postgres
+    container_name: ${REPO_NAME}-postgres
     restart: always
     ports:
       - ${DB_PORT}:5432
@@ -12,43 +12,28 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ${POSTGRES_DATA}:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
     networks:
       - back-tier
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
+      interval: 5s
+      timeout: 3s
       retries: 5
-
-  # app:
-  #   image: node:18-alpine
-  #   container_name: rest-service-nestjs
-  #   restart: always
-  #   user: node
-  #   working_dir: /usr/src/app
-  #   environment:
-  #     - NODE_ENV=development
-  #   volumes:
-  #     - ${APP_DATA}:/usr/src/app
-  #   ports:
-  #     - ${PORT}:${PORT}
-  #   networks:
-  #     - back-tier
-  #   command: "npm start"
 
   app:
     build:
       context: .
-    # image: rest-service-app:${TAG}
-    container_name: rest-service-nestjs
+    image: ${REPO_NAME}:${TAG} # DEVELOPMENT STAGE
+    # image: ${HUB_USER}/${REPO_NAME}:${TAG}
+    container_name: ${REPO_NAME}-nestjs
     depends_on:
       db:
         condition: service_healthy
     restart: always
-    # user: node
+    user: node
     environment:
-      # NODE_ENV=development
       PORT: ${PORT}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -57,19 +42,16 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ${APP_DATA}:/app
+      - ./src:/app/src
     ports:
       - ${PORT}:${PORT}
     networks:
       - back-tier
-    # command: "npm run start:prod"
-    command: "npm start"
+    command: "npm run start:prod"
 
   # pgadmin:
-  #   container_name: pgadmin4_container
-  #   container_name: rest-service-pgadmin4
-
   #   image: dpage/pgadmin4:latest
+  #   container_name: ${REPO_NAME}-pgadmin4
   #   restart: always
   #   environment:
   #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
@@ -77,13 +59,17 @@ services:
   #   ports:
   #     - ${PGADMIN_PORT}:80
     # volumes:
-    #   - ${PGADMIN_DATA}:/var/lib/pgadmin
+    #   - pgadmin-data:/var/lib/pgadmin
     # networks:
     #   - back-tier
 
 volumes:
-  pgdata:
+  db-data:
+    name: ${POSTGRES_DATA}
+  db-logs:
+    name: ${POSTGRES_LOGS}
   # pgadmin-data:
+    # name: ${PGADMIN_DATA}
 
 networks:
   back-tier:

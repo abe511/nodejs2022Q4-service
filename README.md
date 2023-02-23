@@ -17,16 +17,27 @@ On Windows (not tested):
 
 #### other commands:
 
+`make stop`
+
+docker compose down
+
+
+
 `make clean`
 
-
+docker compose down
+remove containers and images
 
 
 ## Docker Image
 
-### Get the `latest` Docker image of this app
+#### Get the `latest` Docker image of this app
 
 `docker pull abe511/rest-service:latest`
+
+#### To run the container in interactive mode:
+
+`docker run -ti --entrypoint /bin/sh abe511/rest-service:latest`
 
 
 ## Prerequisites
