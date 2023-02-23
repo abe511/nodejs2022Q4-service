@@ -1,34 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 // import { Equals } from 'class-validator';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import Artist from './entities/artist.entity';
-import artistDB from "./db/artistDB";
-
+import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
+  constructor(
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
+  ) {}
 
-  db = new artistDB();
-
-  create(createArtistDto: CreateArtistDto): Artist {
-    return this.db.createArtist(createArtistDto);
+  async save(createArtistDto: CreateArtistDto): Promise<Artist> {
+    return this.artistRepository.save(createArtistDto);
   }
 
-  findAll(): Artist[] {
-    return this.db.findAll();
+  async findAll(): Promise<Artist[]> {
+    return await this.artistRepository.find();
   }
 
-  findOne(id: string): Artist {
-    return this.db.findArtist(id);
+  async findOne(id: string): Promise<Artist> {
+    const artist = await this.artistRepository.findOneBy({ id });
+    if (!artist) throw new NotFoundException('Artist Not Found');
+    return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto): Artist | number{
-    return this.db.updateArtist(id, updateArtistDto);
+  async update(
+    id: string,
+    updateArtistDto: UpdateArtistDto,
+  ): Promise<UpdateResult> {
+    const artist = await this.artistRepository.findOneBy({ id });
+    if (!artist) throw new NotFoundException('Artist Not Found');
+    return await this.artistRepository.update(id, updateArtistDto);
   }
 
-  remove(id: string): boolean {
-    return this.db.removeArtist(id);
+  async remove(id: string): Promise<void> {
+    const artist = await this.artistRepository.delete(id);
+    if (!artist.affected) throw new NotFoundException('Artist Not Found');
   }
 }

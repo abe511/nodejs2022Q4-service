@@ -1,34 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 // import { Equals } from 'class-validator';
 import { CreateFavoritesDto } from './dto/create-favorite.dto';
 import { UpdateFavoritesDto } from './dto/update-favorite.dto';
-import Favorites from './entities/favorites.entity';
-import favoritesDB from "./db/favoritesDB";
-
+import { Favorites } from './entities/favorites.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class FavoritesService {
+  constructor(
+    @InjectRepository(Favorites)
+    private favoritesRepository: Repository<Favorites>,
+  ) {}
 
-  db = new favoritesDB();
-
-  create(createFavoritesDto: CreateFavoritesDto): Favorites {
-    return this.db.createFavorites(createFavoritesDto);
+  async save(createFavoritesDto: CreateFavoritesDto): Promise<Favorites> {
+    return this.favoritesRepository.save(createFavoritesDto);
   }
 
-  findAll(): Favorites[] {
-    return this.db.findAll();
+  async findAll(): Promise<Favorites[]> {
+    return await this.favoritesRepository.find();
   }
 
-  findOne(id: string): Favorites {
-    return this.db.findFavorites(id);
+  async findOne(id: string): Promise<Favorites> {
+    const favorites = await this.favoritesRepository.findOneBy({ id });
+    if (!favorites) throw new NotFoundException('Favorites Not Found');
+    return favorites;
   }
 
-  update(id: string, updateFavoritesDto: UpdateFavoritesDto): Favorites | number{
-    return this.db.updateFavorites(id, updateFavoritesDto);
+  async update(
+    id: string,
+    updateFavoritesDto: UpdateFavoritesDto,
+  ): Promise<UpdateResult> {
+    const favorites = await this.favoritesRepository.findOneBy({ id });
+    if (!favorites) throw new NotFoundException('Favorites Not Found');
+    return await this.favoritesRepository.update(id, updateFavoritesDto);
   }
 
-  remove(id: string): boolean {
-    return this.db.removeFavorites(id);
+  async remove(id: string): Promise<void> {
+    const favorites = await this.favoritesRepository.delete(id);
+    if (!favorites.affected) throw new NotFoundException('Favorites Not Found');
   }
 }

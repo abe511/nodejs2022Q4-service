@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   HttpException,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
@@ -47,17 +47,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdatePasswordDto,
   ) {
-    // if (updateUserDto.oldPassword === updateUserDto.newPassword) {
-    //   throw new HttpException("Bad Request", HttpStatus.BAD_REQUEST);
-    // }
-    const response = this.userService.update(id, updateUserDto);
-    // if(response === 0) {
-    //   throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    // }
-    // if(response === -1) {
-    //   throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
-    // }
-    return response;
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

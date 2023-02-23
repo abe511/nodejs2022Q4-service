@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   HttpException,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 
 import { TrackService } from './track.service';
@@ -22,10 +22,7 @@ export class TrackController {
 
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
-    // if (!createTrackDto.login || !createTrackDto.password) {
-    //   throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-    // }
-    return this.trackService.create(createTrackDto);
+    return this.trackService.save(createTrackDto);
   }
 
   @Get()
@@ -47,11 +44,7 @@ export class TrackController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    const response = this.trackService.update(id, updateTrackDto);
-    if(response === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    }
-    return response;
+    return this.trackService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
