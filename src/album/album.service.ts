@@ -1,34 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
+import { Injectable, NotFoundException } from '@nestjs/common';
 // import { Equals } from 'class-validator';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import Album from './entities/album.entity';
-import albumDB from "./db/albumDB";
-
+import { Album } from './entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class AlbumService {
+  constructor(
+    @InjectRepository(Album)
+    private albumRepository: Repository<Album>,
+  ) {}
 
-  db = new albumDB();
-
-  create(createAlbumDto: CreateAlbumDto): Album {
-    return this.db.createAlbum(createAlbumDto);
+  async save(createAlbumDto: CreateAlbumDto): Promise<Album> {
+    return this.albumRepository.save(createAlbumDto);
   }
 
-  findAll(): Album[] {
-    return this.db.findAll();
+  async findAll(): Promise<Album[]> {
+    return await this.albumRepository.find();
   }
 
-  findOne(id: string): Album {
-    return this.db.findAlbum(id);
+  async findOne(id: string): Promise<Album> {
+    const album = await this.albumRepository.findOneBy({ id });
+    if (!album) throw new NotFoundException('Album Not Found');
+    return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto): Album | number{
-    return this.db.updateAlbum(id, updateAlbumDto);
+  async update(
+    id: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<UpdateResult> {
+    const album = await this.albumRepository.findOneBy({ id });
+    if (!album) throw new NotFoundException('Album Not Found');
+    return await this.albumRepository.update(id, updateAlbumDto);
   }
 
-  remove(id: string): boolean {
-    return this.db.removeAlbum(id);
+  async remove(id: string): Promise<void> {
+    const album = await this.albumRepository.delete(id);
+    if (!album.affected) throw new NotFoundException('Album Not Found');
   }
 }

@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   HttpException,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 
 import { AlbumService } from './album.service';
@@ -22,10 +22,7 @@ export class AlbumController {
 
   @Post()
   create(@Body() createAlbumDto: CreateAlbumDto) {
-    // if (!createAlbumDto.login || !createAlbumDto.password) {
-    //   throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-    // }
-    return this.albumService.create(createAlbumDto);
+    return this.albumService.save(createAlbumDto);
   }
 
   @Get()
@@ -47,11 +44,7 @@ export class AlbumController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    const response = this.albumService.update(id, updateAlbumDto);
-    if(response === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    }
-    return response;
+    return this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')

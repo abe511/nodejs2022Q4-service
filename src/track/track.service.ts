@@ -1,34 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
+import { Injectable, NotFoundException } from '@nestjs/common';
 // import { Equals } from 'class-validator';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import Track from './entities/track.entity';
-import trackDB from "./db/trackDB";
-
+import { Track } from './entities/track.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class TrackService {
+  constructor(
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+  ) {}
 
-  db = new trackDB();
-
-  create(createTrackDto: CreateTrackDto): Track {
-    return this.db.createTrack(createTrackDto);
+  async save(createTrackDto: CreateTrackDto): Promise<Track> {
+    return this.trackRepository.save(createTrackDto);
   }
 
-  findAll(): Track[] {
-    return this.db.findAll();
+  async findAll(): Promise<Track[]> {
+    return await this.trackRepository.find();
   }
 
-  findOne(id: string): Track {
-    return this.db.findTrack(id);
+  async findOne(id: string): Promise<Track> {
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) throw new NotFoundException('Track Not Found');
+    return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): Track | number{
-    return this.db.updateTrack(id, updateTrackDto);
+  async update(
+    id: string,
+    updateTrackDto: UpdateTrackDto,
+  ): Promise<UpdateResult> {
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) throw new NotFoundException('Track Not Found');
+    return await this.trackRepository.update(id, updateTrackDto);
   }
 
-  remove(id: string): boolean {
-    return this.db.removeTrack(id);
+  async remove(id: string): Promise<void> {
+    const track = await this.trackRepository.delete(id);
+    if (!track.affected) throw new NotFoundException('Track Not Found');
   }
 }

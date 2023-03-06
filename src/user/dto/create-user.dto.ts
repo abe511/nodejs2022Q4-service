@@ -15,14 +15,9 @@ export class CreateUserDto {
   login: string;
 
   // @IsAlphanumeric()
-  // @IsStrongPassword()
   @IsNotEmpty()
   @MinLength(8, { message: 'Must be 8 characters or more' })
   @MaxLength(32, { message: 'Too many characters' })
   // @Length(8, 32)
   password: string;
-}
-
-function IsStrongPassword() {
-  throw new Error('Function not implemented.');
 }

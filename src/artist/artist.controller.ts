@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   HttpException,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 
 import { ArtistService } from './artist.service';
@@ -22,10 +22,7 @@ export class ArtistController {
 
   @Post()
   create(@Body() createArtistDto: CreateArtistDto) {
-    // if (!createArtistDto.login || !createArtistDto.password) {
-    //   throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-    // }
-    return this.artistService.create(createArtistDto);
+    return this.artistService.save(createArtistDto);
   }
 
   @Get()
@@ -47,11 +44,7 @@ export class ArtistController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    const response = this.artistService.update(id, updateArtistDto);
-    if(response === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    }
-    return response;
+    return this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')

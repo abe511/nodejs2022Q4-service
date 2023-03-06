@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   HttpException,
   HttpStatus,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 
 import { FavoritesService } from './favorites.service';
@@ -22,10 +22,7 @@ export class FavoritesController {
 
   @Post()
   create(@Body() createFavoritesDto: CreateFavoritesDto) {
-    // if (!createFavoritesDto.login || !createFavoritesDto.password) {
-    //   throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-    // }
-    return this.favoritesService.create(createFavoritesDto);
+    return this.favoritesService.save(createFavoritesDto);
   }
 
   @Get()
@@ -47,11 +44,7 @@ export class FavoritesController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateFavoritesDto: UpdateFavoritesDto,
   ) {
-    const response = this.favoritesService.update(id, updateFavoritesDto);
-    if(response === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    }
-    return response;
+    return this.favoritesService.update(id, updateFavoritesDto);
   }
 
   @Delete(':id')

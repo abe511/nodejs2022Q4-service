@@ -1,0 +1,14 @@
+Makefile
+docker-compose.yaml
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.env
+dist
+node_modules
+npm-debug.log
+
+README.md
+assignment.md
+score.md

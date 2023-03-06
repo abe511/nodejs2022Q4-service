@@ -1,5 +1,45 @@
 # Home Library Service
 
+> make
+
+On Linux, MacOS run:
+
+`make`
+
+On Windows (not tested):
+
+`choco install make`
+
+`make`
+
+#### this will run docker compose and deploy `app` and `db` containers
+
+
+#### other commands:
+
+`make stop`
+
+docker compose down
+
+
+
+`make clean`
+
+docker compose down
+remove containers and images
+
+
+## Docker Image
+
+#### Get the `latest` Docker image of this app
+
+`docker pull abe511/rest-service:latest`
+
+#### To run the container in interactive mode:
+
+`docker run -ti --entrypoint /bin/sh abe511/rest-service:latest`
+
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).

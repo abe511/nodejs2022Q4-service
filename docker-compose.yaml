@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+
+  db:
+    image: postgres:15-alpine
+    container_name: ${REPO_NAME}-postgres
+    restart: always
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
+    networks:
+      - back-tier
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build:
+      context: .
+    image: ${REPO_NAME}:${TAG} # DEVELOPMENT STAGE
+    # image: ${HUB_USER}/${REPO_NAME}:${TAG}
+    container_name: ${REPO_NAME}-nestjs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    user: node
+    environment:
+      PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      PGUSER: ${PGUSER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./src:/app/src
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - back-tier
+    command: "npm run start:prod"
+
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: ${REPO_NAME}-pgadmin4
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   ports:
+  #     - ${PGADMIN_PORT}:80
+    # volumes:
+    #   - pgadmin-data:/var/lib/pgadmin
+    # networks:
+    #   - back-tier
+
+volumes:
+  db-data:
+    name: ${POSTGRES_DATA}
+  db-logs:
+    name: ${POSTGRES_LOGS}
+  # pgadmin-data:
+    # name: ${PGADMIN_DATA}
+
+networks:
+  back-tier:
