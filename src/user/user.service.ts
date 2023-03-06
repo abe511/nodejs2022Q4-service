@@ -12,12 +12,16 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 
+import { CustomLoggerService } from "src/custom-logger/custom-logger.service";
+
 import { config } from 'dotenv';
 config();
 
 @Injectable()
 export class UserService {
   salt: number = parseInt(process.env.CRYPT_SALT);
+  private readonly logger = new CustomLoggerService(UserService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -25,11 +29,13 @@ export class UserService {
 
   async save(createUserDto: CreateUserDto): Promise<User> {
     const { login, password } = createUserDto;
+    this.logger.warn(`about to create a user with ${login} and ${password}`);
     const passwordHash = await bcrypt.hash(password, this.salt);
     return this.userRepository.save({ login, password: passwordHash });
   }
 
   async findAll(): Promise<User[]> {
+    this.logger.log("user service find all users");
     return await this.userRepository.find();
   }
 

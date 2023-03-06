@@ -12,6 +12,7 @@ import { Artist } from './artist/entities/artist.entity';
 import { Album } from './album/entities/album.entity';
 import { Track } from './track/entities/track.entity';
 import { Favorites } from './favorites/entities/favorites.entity';
+import { CustomLoggerModule } from './custom-logger/custom-logger.module';
 
 import { config } from 'dotenv';
 config();
@@ -25,8 +26,8 @@ config();
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      synchronize: true, // NOT FOR PRODUCTION MODE
-      logging: true,
+      synchronize: true, // FALSE FOR PRODUCTION MODE
+      logging: false,
       entities: [User, Artist, Album, Track, Favorites],
       migrations: [],
       subscribers: [],
@@ -38,6 +39,7 @@ config();
     AlbumModule,
     TrackModule,
     FavoritesModule,
+    CustomLoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
